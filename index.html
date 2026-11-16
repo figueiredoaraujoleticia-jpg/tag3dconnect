@@ -177,6 +177,10 @@ footer { background: var(--navy); color: rgba(255,255,255,.75); font-size: 14px;
 footer .wrap { display: flex; flex-wrap: wrap; gap: 16px 40px; justify-content: space-between; padding-block: 36px; }
 footer b { color: var(--white); }
 
+.wa-float { position: fixed; right: calc(18px + env(safe-area-inset-right, 0px)); bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 30; display: flex; align-items: center; gap: 8px; background: #1fa855; color: #fff; text-decoration: none; font-weight: 700; border-radius: 999px; padding: 12px 18px; box-shadow: 0 8px 24px rgba(11,26,51,.3); }
+.wa-float:hover { background: #178c46; }
+@media (max-width: 520px) { .wa-float span { display: none; } .wa-float { padding: 14px; } }
+footer a { color: var(--gold-2); }
 /* Gaveta do carrinho / checkout */
 .scrim { position: fixed; inset: 0; background: rgba(11,26,51,.55); z-index: 40; }
 .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(460px, 100%); background: var(--white); z-index: 50; display: flex; flex-direction: column; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); padding-right: env(safe-area-inset-right, 0px); box-shadow: -20px 0 40px rgba(11,26,51,.25); }
@@ -322,6 +326,7 @@ footer b { color: var(--white); }
       <details><summary>Posso mudar o link depois?</summary><p>Sim. A tag pode ser regravada quando você quiser trocar o link.</p></details>
       <details><summary>Quanto tempo demora a entrega?</summary><p>Depende do seu CEP e da modalidade escolhida. O prazo aparece junto com o valor do frete.</p></details>
       <details><summary>Quais formas de pagamento vocês aceitam?</summary><p>Pix, cartão de crédito e cartão de débito.</p></details>
+      <details><summary>Ainda tem dúvidas?</summary><p>Fale com a gente no <a href="https://wa.me/5561993276640?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Tag%203D.connect%20e%20quero%20saber%20mais%20sobre%20os%20chaveiros." target="_blank" rel="noopener">WhatsApp (61) 99327-6640</a>.</p></details>
     </div>
   </section>
 </main>
@@ -331,8 +336,11 @@ footer b { color: var(--white); }
     <div><b>Tag 3D.connect</b><br>Chaveiros empresariais com tag NFC</div>
     <div><b>Envio</b><br>Águas Claras, Brasília (DF) · Correios</div>
     <div><b>Pagamento</b><br>Pix · Crédito · Débito</div>
+    <div><b>Atendimento</b><br><a href="https://wa.me/5561993276640?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Tag%203D.connect%20e%20quero%20saber%20mais%20sobre%20os%20chaveiros." target="_blank" rel="noopener">WhatsApp (61) 99327-6640</a></div>
   </div>
 </footer>
+
+<a class="wa-float" href="https://wa.me/5561993276640?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Tag%203D.connect%20e%20quero%20saber%20mais%20sobre%20os%20chaveiros." target="_blank" rel="noopener" aria-label="Conversar pelo WhatsApp"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.8 11.8 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2s.2-1.1.1-1.2l-.4-.2z"/></svg><span>Fale com a gente</span></a>
 
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" hidden aria-label="Carrinho e pagamento">
@@ -349,6 +357,7 @@ footer b { color: var(--white); }
     nome: "TAG 3D CONNECT",       // nome que aparece no Pix (até 25 letras)
     cidade: "BRASILIA",           // cidade do recebedor no Pix
     pixChave: "figueiredo.araujo.leticia@gmail.com",
+    whatsapp: "5561993276640",    // WhatsApp da loja que recebe os pedidos
     origemCep: "71938-180"        // Águas Claras (DF), CEP de envio
   };
   var ITENS = ["Impresso em 3D, acabamento texturizado", "Tag NFC gravada com o seu link", "Argola e corrente de metal"];
@@ -477,6 +486,14 @@ footer b { color: var(--white); }
       '<div class="total"><span>Total</span><span>' + brl(subtotal() + (withShip ? shipValue() : 0)) + '</span></div></div>';
   }
 
+  function orderText(pagamento) {
+    var linhas = ["*Novo pedido Tag 3D.connect*", "Pagamento: " + pagamento, ""];
+    unitList().forEach(function (u, n) { var l = links[u.key]; linhas.push("Chaveiro " + (n + 1) + " (" + u.p.id + "): " + LINK[l.tipo].nome + " " + l.valor); });
+    linhas.push("", "Nome: " + buyer.nome, "WhatsApp: " + buyer.tel, "Endereço: " + buyer.end, "CEP: " + buyer.cep,
+      "Frete: " + shipChoice.toUpperCase() + " " + brl(shipValue()), "*Total: " + brl(subtotal() + shipValue()) + "*");
+    return linhas.join("\n");
+  }
+  var doneInfo = null;
   function render() {
     var titles = ["Seu carrinho", "Link de cada chaveiro", "Entrega", "Pagamento", "Pedido recebido"];
     $("dTitle").textContent = titles[step];
@@ -576,24 +593,45 @@ footer b { color: var(--white); }
             body: JSON.stringify({ itens: cart, cep: buyer.cep, frete: shipChoice, metodo: payMethod, comprador: buyer,
               links: unitList().map(function (u) { return { cor: u.p.id, tipo: links[u.key].tipo, valor: links[u.key].valor }; }) }) })
             .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
-            .then(function (d) { window.location.href = d.url; })
+            .then(function (d) {
+              try { localStorage.setItem("t3d-order", JSON.stringify({ nome: buyer.nome, texto: orderText("Cartão de " + (payMethod === "credito" ? "crédito" : "débito") + " pelo Mercado Pago, pedido " + d.pedido) })); } catch (e) {}
+              window.location.href = d.url;
+            })
             .catch(function () { btn.disabled = false; btn.textContent = "Pagar " + brl(total) + " com Mercado Pago";
               $("mpErr").textContent = "Não foi possível abrir o pagamento agora. Tente de novo ou pague com Pix."; });
         };
       }
       $("back").onclick = function () { step = 2; render(); };
-      if ($("paid")) $("paid").onclick = function () { step = 4; render(); };
+      if ($("paid")) $("paid").onclick = function () {
+        doneInfo = { titulo: "Falta só enviar o comprovante", aviso: "Toque no botão abaixo para mandar o pedido e o comprovante do Pix pelo WhatsApp. Sem isso não conseguimos identificar o seu pagamento.",
+          texto: orderText("Pix " + brl(subtotal() + shipValue()) + " (vou enviar o comprovante)") };
+        step = 4; render();
+      };
     }
 
     if (step === 4) {
-      body.innerHTML = '<div class="done"><div class="ok">✓</div><h3>Obrigado, ' + esc(buyer.nome.split(" ")[0]) + '!</h3>' +
-        '<div class="sum" style="width:100%;text-align:left">' + unitList().map(function (u, n) { var l = links[u.key]; return '<div><span>Chaveiro ' + (n + 1) + ' (' + u.p.id + ')</span><span>' + LINK[l.tipo].nome + ': ' + esc(l.valor) + '</span></div>'; }).join("") + '</div>' +
-        '<p>Recebemos seu pedido. Assim que o Pix for confirmado, enviaremos o código de rastreio pelo WhatsApp informado.</p>' +
-        '</div>';
-      foot.innerHTML = '<button class="btn btn-navy" type="button" id="finish">Voltar à loja</button>';
-      $("finish").onclick = function () { cart = {}; save(); closeDrawer(); };
+      var waUrl = "https://wa.me/" + STORE.whatsapp + "?text=" + encodeURIComponent(doneInfo.texto);
+      body.innerHTML = '<div class="done"><div class="ok">✓</div><h3>' + esc(doneInfo.titulo) + '</h3><p>' + esc(doneInfo.aviso) + '</p>' +
+        '<pre style="white-space:pre-wrap;text-align:left;width:100%;background:var(--paper);border-radius:10px;padding:12px;font:13px/1.5 var(--font-body);margin:0">' + esc(doneInfo.texto) + '</pre></div>';
+      foot.innerHTML = '<a class="btn btn-gold" id="waSend" href="' + esc(waUrl) + '" target="_blank" rel="noopener">Enviar pedido pelo WhatsApp</a>' +
+        '<p class="note" style="text-align:center">WhatsApp da loja: (61) 99327-6640</p><button class="btn" style="color:var(--muted)" type="button" id="finish">Voltar à loja</button>';
+      $("waSend").onclick = function () { cart = {}; links = {}; save(); try { localStorage.removeItem("t3d-order"); } catch (e) {} };
+      $("finish").onclick = function () { closeDrawer(); };
     }
   }
+
+  // ===== Volta do Mercado Pago =====
+  (function () {
+    var st = new URLSearchParams(location.search).get("pagamento"); if (!st) return;
+    var saved = null; try { saved = JSON.parse(localStorage.getItem("t3d-order") || "null"); } catch (e) {}
+    history.replaceState(null, "", location.pathname);
+    if (st === "recusado") { step = 0; openDrawer(); return; }
+    if (!saved) return;
+    doneInfo = { titulo: st === "aprovado" ? "Pagamento aprovado, " + saved.nome.split(" ")[0] + "!" : "Pagamento em análise",
+      aviso: "Agora envie o pedido pelo WhatsApp para gravarmos os links dos seus chaveiros e postarmos a entrega.",
+      texto: saved.texto + (st === "aprovado" ? "\nStatus: aprovado" : "\nStatus: em análise") };
+    step = 4; openDrawer();
+  })();
 
   // ===== Pix copia e cola (padrão BR Code do Banco Central) =====
   function tlv(id, v) { return id + String(v.length).padStart(2, "0") + v; }
